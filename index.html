@@ -1163,10 +1163,11 @@ function renderizarSeccion(s, midx, sidx) {
       <div style="border-radius:12px; overflow:hidden; margin:1rem 0; box-shadow:0 4px 20px rgba(0,0,0,0.15);">
         <div class="video-contenedor" id="video-\${midx}-\${sidx}" style="border-radius:0; margin:0;">
           <div class="video-placeholder" onclick="cargarVideo('\${s.contenido.videoId}', \${midx}, \${sidx})">
-            <div class="play-btn">▶</div>
-            <strong style="font-size:1rem">\${s.contenido.titulo}</strong>
+            <div class="play-btn" style="background:#ff0000; color:white; font-size:2.5rem; width:80px; height:80px;">▶</div>
+            <strong style="font-size:1.05rem; margin-top:0.5rem;">\${s.contenido.titulo}</strong>
             <p>\${s.contenido.descripcion}</p>
-            <small>📱 Tocá para ver el video</small>
+            <div style="background:#ff0000; color:white; border-radius:20px; padding:0.5rem 1.5rem; margin-top:0.8rem; font-weight:700; font-size:0.9rem;">▶ Ver en YouTube</div>
+            <small style="margin-top:0.5rem;">Se abre en YouTube — gratis y sin publicidad molesta</small>
           </div>
         </div>
         <div style="background:#1a3a06; padding:0.7rem 1rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
