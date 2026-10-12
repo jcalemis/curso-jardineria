@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Promo pedidos v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  body { font-family: 'Inter', 'Noto Color Emoji', sans-serif; color: #fff; }
+  #stage { position: absolute; inset: 0; overflow: hidden; }
+  .abs { position: absolute; }
+  .center { left: 0; right: 0; text-align: center; }
+  .sub {
+    position: absolute; left: 70px; right: 70px; top: 1530px; text-align: center;
+    font-size: 44px; font-weight: 700; line-height: 1.25;
+    text-shadow: 0 2px 4px #000; background: rgba(0,0,0,.55); padding: 14px 22px; border-radius: 18px;
+  }
+  .pill { display: inline-block; padding: 14px 30px; border-radius: 999px; font-weight: 800; }
+  .phone { position: absolute; left: 272px; top: 400px; width: 536px; height: 1064px; border-radius: 62px;
+    background: #0a0a0a; box-shadow: 0 40px 90px rgba(0,0,0,.5), inset 0 0 0 4px #2a2a2a; }
+  .screen { position: absolute; left: 18px; top: 18px; width: 500px; height: 1028px; border-radius: 46px; overflow: hidden; background: #081b29; }
+  .screen img.rec { position: absolute; left: 0; top: 0; width: 500px; height: 1028px; }
+  .tap { position: absolute; width: 80px; height: 80px; margin: -40px 0 0 -40px; border-radius: 50%; background: rgba(255,255,255,.5); border: 5px solid rgba(255,255,255,.95); box-shadow: 0 0 0 6px rgba(0,0,0,.2); z-index: 50; }
+  .logo-la { font-weight: 900; letter-spacing: 4px; line-height: .9; }
+  .logo-dist { font-weight: 700; letter-spacing: 12px; }
+  .lbl { font-size: 15px; letter-spacing: 2px; color: #7b96a8; margin: 16px 0 6px; }
+  .fld { height: 44px; border-radius: 8px; background: #1c3e56; padding: 11px 14px; font-size: 18px; color: #e8f0f5; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="grain"><feTurbulence id="turb" type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="1"/><feColorMatrix type="saturate" values="0"/></filter>
+</svg>
+<script>
+// Colores tomados de la web real
+const NAVY = '#081b29', PANEL = '#152f3e', FIELD = '#1c3e56', BLUE = '#25739f', SKY = '#4fa3d9', WA = '#1fae74';
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const back = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const fade = (t, a, b, f = 0.25) => Math.min(prog(t, a, a + f), 1 - prog(t, b - f, b));
+
+// Tramos de la grabación real: [inicio video, fin video, inicio fuente, fin fuente]
+const SEGS = [
+  [6.0, 8.5, 0.5, 5.0],    // recorre rubros
+  [8.5, 10.5, 5.3, 7.9],   // agrega Rusitos
+  [10.5, 11.5, 8.0, 10.8], // pasa a Café en frasco
+  [11.5, 13.0, 11.2, 13.4],// agrega cafés
+  [13.0, 15.0, 15.6, 17.8],// abre "Mi pedido"
+];
+const FORM_A = 15.0, FORM_B = 17.6, WA_B = 20.6;
+const SCALE = 500 / 648; // recorte 648x1332 -> pantalla 500x1028
+
+const ORDER = [
+  ['01770', 'Rusito almohaditas de chocolate x 1kg'],
+  ['02039', 'Rusito conito x kg'],
+  ['00550', 'Café La Morenita x 100 frasco (6)'],
+  ['00548', 'Café La Virginia suave frasco x 100g'],
+];
+const FAKE = [['TU NOMBRE *', 'Juan Pérez'], ['NOMBRE DEL NEGOCIO', 'Almacén Don Juan'], ['TELÉFONO / WHATSAPP *', '11 1234-5678'], ['DIRECCIÓN DE ENTREGA', 'Av. Siempreviva 742']];
+
+const SUBS = [
+  [0.1, 3, '¿Todavía esperás que pase el vendedor para armar el pedido?'],
+  [3, 5, 'Catálogo en papel, audios, “anotame esto”...'],
+  [5, 6.1, 'Ahora lo armás vos, cuando quieras.'],
+  [6.1, 10.5, 'Entrás a la web y tenés todo el catálogo ordenado por rubro.'],
+  [10.5, 13, 'Elegís los productos con un toque...'],
+  [13, 15, '...revisás tu pedido...'],
+  [15, 17.6, '...completás tus datos...'],
+  [17.6, 20.6, '...y se lo mandás por WhatsApp a tu vendedor.'],
+  [20.6, 24.6, 'Él lo carga y tu mercadería sale en el reparto.'],
+  [24.6, 27, 'Sin esperar la visita. Sin audios. Sin errores.'],
+  [27, 30, 'Anticipá tu pedido desde el celular.'],
+];
+
+const tapEl = (t, at, x, y) => {
+  const p = prog(t, at - 0.15, at + 0.35);
+  if (p <= 0 || p >= 1) return '';
+  const s = p < 0.3 ? 0.7 + p : 1 - (p - 0.3) * 0.4, o = p < 0.3 ? p / 0.3 : 1 - (p - 0.3) / 0.7;
+  return `<div class="tap" style="left:${x}px;top:${y}px;transform:scale(${s});opacity:${o}"></div>`;
+};
+const logo = (size) => `<div class="logo-la" style="font-size:${size}px">LA</div>
+  <div class="logo-dist" style="font-size:${size * 0.22}px;margin-top:${size * 0.08}px">DISTRIBUCIONES</div>
+  <div style="font-size:${size * 0.09}px;letter-spacing:4px;color:#9fb6c6;margin-top:8px">VALORANDO LA CONFIANZA EN CADA NEGOCIO</div>`;
+
+// ---------- 0–5 s: el caos ----------
+function sceneChaos(t) {
+  let h = `<div class="abs" style="inset:0;background:radial-gradient(circle at 50% 40%,#5a5148,#221e1a);filter:grayscale(.75) contrast(1.1)">`;
+  for (let i = 0; i < 7; i++) {
+    const r = (i * 37) % 30 - 15;
+    h += `<div class="abs" style="left:${120 + (i * 131) % 700}px;top:${380 + (i * 173) % 900}px;width:330px;height:420px;background:#e9e2d0;transform:rotate(${r}deg);box-shadow:0 8px 20px rgba(0,0,0,.4);padding:30px;color:#555;font:600 26px 'DejaVu Sans Mono',monospace;line-height:1.6">PEDIDO<br>rusitos x2??<br>café ... <br>~~yerba~~<br>¿conito?</div>`;
+  }
+  if (t < 3) {
+    const drop = easeOut(prog(t, 2.2, 2.8));
+    h += `<div class="phone" style="left:260px;top:${520 + drop * 120}px;width:560px;height:980px;transform:rotate(${-4 + drop * 10}deg)">
+      <div class="screen" style="width:524px;height:944px;background:#e5ddd5">
+        <div style="background:#075e54;color:#fff;height:120px;padding:60px 30px 0;font:700 32px Inter">Vendedor 🧑‍💼</div>
+        ${[0, 1, 2].map(i => `<div class="abs" style="left:24px;top:${170 + i * 150}px;width:420px;height:110px;background:${i === 2 ? '#dcf8c6' : '#fff'};border-radius:18px;padding:22px;color:#333;font:600 28px Inter;display:flex;align-items:center;gap:18px">
+          <span style="font-size:40px">▶️</span><span style="flex:1;height:8px;background:#aaa;border-radius:4px"></span><span>${['1:12', '3:05', '4:37'][i]}</span></div>`).join('')}
+        <div class="abs" style="left:24px;top:640px;width:380px;height:80px;background:#fff;border-radius:18px;padding:22px;color:#333;font:600 28px Inter">¿cuándo pasás? 🙏</div>
+      </div></div>`;
+    const shake = Math.sin(t * 70) * 14 * (1 - prog(t, 0.2, 1.1));
+    const s = back(prog(t, 0.1, 0.5));
+    h += `<div class="abs center" style="top:250px;transform:translateX(${shake}px) scale(${s})"><span class="pill" style="background:#fff;color:#111;font-size:54px;padding:22px 34px;line-height:1.2">¿Esperás al vendedor<br>para hacer el pedido? 🤔</span></div>`;
+  } else {
+    const stickers = ['⏳ Esperando la visita', '📝 Lista en papel', '❌ ¿x2 o x12?', '🎙️ Audio de 4 min', '❌ Me olvidé el café', '📦 Faltó mercadería'];
+    stickers.forEach((s, i) => {
+      const a = 3 + i * 0.3;
+      if (t < a) return;
+      const sc = back(prog(t, a, a + 0.18));
+      h += `<div class="abs" style="left:${[70, 400, 120, 430, 80, 380][i]}px;top:${[330, 520, 760, 980, 1180, 1340][i]}px;transform:rotate(${[-8, 6, -4, 9, -6, 4][i]}deg) scale(${sc})">
+        <span class="pill" style="background:#e63946;color:#fff;font-size:50px;box-shadow:0 10px 0 #8d1c25">${s}</span></div>`;
+    });
+  }
+  h += `</div><div class="abs" style="inset:0;filter:url(#grain);opacity:.22;background:#fff;mix-blend-mode:overlay"></div>`;
+  return h;
+}
+
+// ---------- 5–6 s: corte seco a la marca ----------
+function sceneSwipe(t) {
+  const y = (1 - easeOut(prog(t, 5, 5.35))) * 1920;
+  const s = back(prog(t, 5.3, 5.65));
+  return `<div class="abs" style="left:0;right:0;top:${y}px;height:1920px;background:radial-gradient(circle at 50% 40%,#123a55,${NAVY})">
+    <div class="abs center" style="top:700px;transform:scale(${s})">${logo(230)}
+      <div style="margin-top:50px"><span class="pill" style="background:${SKY};color:#062033;font-size:40px">ladistribuciones.web.app</span></div>
+    </div></div>`;
+}
+
+// ---------- 6–20.6 s: la web real ----------
+function srcTime(t) {
+  for (const [a, b, sa, sb] of SEGS) if (t >= a && t < b) return sa + (t - a) / (b - a) * (sb - sa);
+  return null;
+}
+function screenForm(t) {
+  // Recreación del paso "Datos del pedido" con datos ficticios (sin datos reales del cliente)
+  const enter = easeOut(prog(t, FORM_A, FORM_A + 0.35));
+  let h = `<img class="rec" src="src/form_bg.jpg">
+    <div class="abs" style="left:0;right:0;top:${200 + (1 - enter) * 828}px;bottom:0;background:${PANEL};border-radius:22px 22px 0 0;padding:26px 20px">
+      <div style="font-size:30px;font-weight:700">Datos del pedido</div>
+      <div style="font-size:17px;color:#b7c7d2;margin-top:8px;line-height:1.35">Completá tus datos para generar el pedido. Tu vendedor lo recibirá y te confirmará la disponibilidad.</div>`;
+  FAKE.forEach(([l, v], i) => {
+    const n = Math.floor(prog(t, FORM_A + 0.4 + i * 0.35, FORM_A + 0.7 + i * 0.35) * v.length);
+    h += `<div class="lbl">${l}</div><div class="fld">${v.slice(0, n)}</div>`;
+  });
+  h += `<div class="lbl">NOTAS ADICIONALES</div><div class="fld" style="height:64px;color:#8aa2b2">Ej: entregar por la tarde, algún producto alternativo, etc.</div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <div style="flex:.8;height:52px;border-radius:8px;border:1px solid #2c4a5e;color:#9fb6c6;font-size:18px;text-align:center;line-height:50px">Volver</div>
+        <div style="flex:1.3;height:52px;border-radius:8px;background:${WA};font-weight:700;font-size:20px;text-align:center;line-height:52px;transform:scale(${t > FORM_B - 0.4 && t < FORM_B - 0.2 ? 0.94 : 1})">WhatsApp</div>
+        <div style="flex:1.3;height:52px;border-radius:8px;background:${BLUE};font-weight:700;font-size:20px;text-align:center;line-height:52px">PDF</div>
+      </div></div>`;
+  h += tapEl(t, FORM_B - 0.35, 225, 945);
+  return h;
+}
+function screenWhatsApp(t) {
+  const lines = ORDER.map(([c, n]) => `${c} · ${n} — <b>1</b>`).join('<br>');
+  const s = back(prog(t, FORM_B + 0.2, FORM_B + 0.55));
+  const read = t > FORM_B + 1.4;
+  return `<div class="abs" style="inset:0;background:#0b141a"></div>
+    <div class="abs" style="left:0;right:0;top:0;height:120px;background:#1f2c34;padding:56px 20px 0;display:flex;gap:14px;align-items:center">
+      <span style="font-size:26px;color:#aebac1">←</span>
+      <span style="width:46px;height:46px;border-radius:50%;background:${NAVY};font-weight:900;font-size:18px;text-align:center;line-height:46px;border:2px solid ${SKY}">LA</span>
+      <div><div style="font-size:21px;font-weight:700">Vendedor · LA Distribuciones</div><div style="font-size:15px;color:#8696a0">en línea</div></div></div>
+    <div class="abs" style="right:14px;top:180px;width:420px;background:#005c4b;border-radius:14px 0 14px 14px;padding:14px 16px 10px;font-size:17px;line-height:1.45;color:#e9edef;transform-origin:top right;transform:scale(${s})">
+      🛒 <b>Nuevo pedido</b><br>Almacén Don Juan · Juan Pérez<br><br>${lines}<br><br><b>Total: 4 unidades · 4 productos</b>
+      <div style="text-align:right;font-size:13px;color:#8fb5ad;margin-top:6px">9:15 <span style="color:${read ? '#53bdeb' : '#8fb5ad'}">✓✓</span></div></div>
+    ${t > FORM_B + 1.8 ? `<div class="abs" style="left:14px;top:${640}px;width:330px;background:#202c33;border-radius:0 14px 14px 14px;padding:14px 16px 10px;font-size:17px;color:#e9edef;transform-origin:top left;transform:scale(${back(prog(t, FORM_B + 1.8, FORM_B + 2.1))})">¡Recibido! Lo cargo y sale en el próximo reparto 👍<div style="text-align:right;font-size:13px;color:#8696a0;margin-top:4px">9:16</div></div>` : ''}`;
+}
+
+function sceneWeb(t) {
+  const enter = easeOut(prog(t, 6, 6.5));
+  let scr;
+  const st = srcTime(t);
+  if (st !== null) {
+    const idx = String(Math.min(570, Math.max(1, Math.round(st * 30) + 1))).padStart(4, '0');
+    scr = `<img class="rec" src="src/r_${idx}.jpg">`;
+    scr += tapEl(t, 13.25, 261, 967);  // "Mi pedido"
+    scr += tapEl(t, 14.85, 255, 909);  // "Generar pedido"
+  } else if (t < FORM_B) scr = screenForm(t);
+  else scr = screenWhatsApp(t);
+  let h = `<div class="abs" style="inset:0;background:radial-gradient(circle at 50% 30%,#1b4a6b,${NAVY} 75%)"></div>
+    <div class="phone" style="transform:translateY(${(1 - enter) * 900}px)"><div class="screen">${scr}</div></div>`;
+  // cronómetro con el tiempo real de la grabación
+  if (t >= 6.2) {
+    let secs;
+    if (st !== null) secs = st;
+    else if (t < FORM_B) secs = 18 + prog(t, FORM_A, FORM_B - 0.3) * 21;
+    else secs = 40;
+    secs = Math.round(secs);
+    const ss = String(secs % 60).padStart(2, '0'), mm = String(Math.floor(secs / 60)).padStart(2, '0');
+    const done = t >= FORM_B;
+    const big = easeOut(prog(t, FORM_B, FORM_B + 0.4)) * (1 - prog(t, WA_B - 0.3, WA_B));
+    h += `<div class="abs" style="left:${780 - big * 250}px;top:300px;transform:scale(${1 + big * 0.7});background:#000;border-radius:22px;padding:12px 24px;font-size:42px;font-weight:900;font-variant-numeric:tabular-nums;border:4px solid ${done ? WA : '#000'}">⏱ ${mm}:${ss}</div>`;
+  }
+  const call = (a, b, txt, bg = SKY, fg = '#062033') => {
+    const o = fade(t, a, b);
+    return o > 0 ? `<div class="abs" style="left:50px;top:300px;opacity:${o};transform:translateX(${(1 - easeOut(prog(t, a, a + 0.3))) * -60}px)"><span class="pill" style="background:${bg};color:${fg};font-size:40px">${txt}</span></div>` : '';
+  };
+  h += call(6.4, 8.5, '📱 Todo el catálogo') + call(8.5, 13, '➕ Un toque y listo', '#fff', '#062033');
+  h += call(13, 15, '🛒 Revisás tu pedido') + call(15, 17.6, '✍️ Tus datos', '#fff', '#062033');
+  // al confirmar, cartel arriba del cronómetro
+  const sent = fade(t, FORM_B + 0.3, WA_B);
+  if (sent > 0) h += `<div class="abs center" style="top:240px;opacity:${sent}"><span class="pill" style="background:${WA};color:#fff;font-size:34px;padding:10px 26px">Pedido armado en 40 segundos</span></div>`;
+  return h;
+}
+
+// ---------- 20.6–24.6 s: el vendedor lo carga y sale el reparto ----------
+function sceneWarehouse(t) {
+  let h = `<div class="abs" style="inset:0;background:linear-gradient(180deg,#0e2232 0%,#1d3a4f 60%,#4a3e33 60%,#2f2822 100%)"></div>`;
+  h += `<div class="abs" style="left:620px;top:0;width:460px;height:1920px;background:linear-gradient(100deg,rgba(255,220,150,0),rgba(255,220,150,.25),rgba(255,220,150,0));transform:skewX(-12deg)"></div>`;
+  for (let c = 0; c < 2; c++) for (let r = 0; r < 5; r++) for (let k = 0; k < 3; k++)
+    h += `<div class="abs" style="left:${60 + c * 300 + k * 88}px;top:${300 + r * 160}px;width:80px;height:110px;background:${['#c8955a', '#b07d45', '#d9a86c'][(r + k + c) % 3]};border:3px solid #7a5530;border-radius:6px"></div>`;
+  for (let c = 0; c < 2; c++) for (let r = 0; r <= 5; r++)
+    h += `<div class="abs" style="left:${50 + c * 300}px;top:${414 + (r - 1) * 160 + 2}px;width:280px;height:12px;background:${SKY}"></div>`;
+  // remito / pedido cargado
+  const doc = back(prog(t, 20.8, 21.2)) * (1 - prog(t, 22.2, 22.5));
+  if (doc > 0) h += `<div class="abs" style="left:660px;top:640px;width:340px;padding:24px;background:#fff;color:#1b2b36;border-radius:16px;box-shadow:0 20px 40px rgba(0,0,0,.4);transform:scale(${doc}) rotate(3deg);font-size:22px;line-height:1.5">
+      <b style="font-size:26px">🧾 Pedido cargado</b><br>Almacén Don Juan<br>4 productos · 4 unidades<br><span style="color:${WA};font-weight:800">✔ Venta generada</span></div>`;
+  const px = 300 + easeOut(prog(t, 21, 22.8)) * 260;
+  h += `<div class="abs" style="left:${px}px;top:1040px;font-size:110px;line-height:1">📦📦<br>📦📦</div>`;
+  const tx = -380 + prog(t, 22.4, 24.6) * 1500;
+  h += `<div class="abs" style="left:${tx}px;top:1080px;font-size:300px;transform:scaleX(-1)">🚚</div>`;
+  const s1 = fade(t, 20.7, 22.5), s2 = fade(t, 22.4, 24.7);
+  if (s1 > 0) h += `<div class="abs center" style="top:300px;opacity:${s1}"><span class="pill" style="background:#fff;color:#111;font-size:54px">🧑‍💼 Tu vendedor lo carga</span></div>`;
+  if (s2 > 0) h += `<div class="abs center" style="top:300px;opacity:${s2}"><span class="pill" style="background:${SKY};color:#062033;font-size:54px">🚚 Sale en el reparto</span></div>`;
+  return h;
+}
+
+// ---------- 24.6–27 s: el comercio ----------
+function sceneStore(t) {
+  let h = `<div class="abs" style="inset:0;background:radial-gradient(circle at 50% 55%,#ffe8c2,#f2b56b)"></div>
+    <div class="abs center" style="top:${820 + Math.sin(t * 3) * 8}px;font-size:300px">🏪</div>
+    <div class="abs" style="left:640px;top:1150px;font-size:150px;transform:rotate(${Math.sin(t * 2) * 6}deg)">🧉</div>`;
+  ['Sin esperar la visita.', 'Sin audios.', 'Sin errores.'].forEach((w, i) => {
+    const a = 24.7 + i * 0.45, s = back(prog(t, a, a + 0.3));
+    if (t >= a) h += `<div class="abs center" style="top:${280 + i * 120}px;transform:scale(${s})"><span class="pill" style="background:${i === 2 ? NAVY : '#fff'};color:${i === 2 ? '#fff' : '#111'};font-size:62px;padding:12px 34px">${w}</span></div>`;
+  });
+  return h;
+}
+
+// ---------- 27–30 s: placa final ----------
+function sceneEnd(t) {
+  const s = back(prog(t, 27, 27.4)), pulse = 1 + 0.06 * Math.sin((t - 27) * 9);
+  return `<div class="abs" style="inset:0;background:radial-gradient(circle at 50% 35%,#163f5c,${NAVY} 75%)"></div>
+    <div class="abs center" style="top:300px;transform:scale(${s})">
+      ${logo(200)}
+      <div style="margin-top:70px;font-size:62px;font-weight:800;line-height:1.2">Anticipá tu pedido<br>desde el celular 📱</div>
+      <div style="margin:50px 70px 0;padding:26px;border-radius:26px;background:rgba(255,255,255,.1);border:2px solid #2c5470;font-size:44px;font-weight:800">👉 ladistribuciones.web.app<br>/pedidos.html</div>
+      <div style="margin-top:70px;transform:scale(${pulse})"><span class="pill" style="background:${WA};color:#fff;font-size:58px;padding:26px 60px;box-shadow:0 12px 0 #12764e">ARMAR MI PEDIDO</span></div>
+    </div>`;
+}
+
+function render(t, frame = 0) {
+  document.getElementById('turb').setAttribute('seed', frame % 50);
+  let h;
+  if (t < 5) h = sceneChaos(t);
+  else if (t < 6) h = sceneChaos(4.99) + sceneSwipe(t);
+  else if (t < WA_B) h = sceneWeb(t);
+  else if (t < 24.6) h = sceneWarehouse(t);
+  else if (t < 27) h = sceneStore(t);
+  else h = sceneEnd(t);
+  for (const c of [WA_B, 24.6, 27]) { const o = 1 - prog(Math.abs(t - c), 0, 0.12); if (o > 0) h += `<div class="abs" style="inset:0;background:#fff;opacity:${o * 0.8}"></div>`; }
+  const sub = SUBS.find(([a, b]) => t >= a && t < b);
+  if (sub) h += `<div class="sub">${sub[2]}</div>`;
+  document.getElementById('stage').innerHTML = h;
+  return Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+}
+window.render = render;
+</script>
+</body>
+</html>

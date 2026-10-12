@@ -9,13 +9,13 @@
 ## 1. Concepto creativo
 
 ### Ángulo: **"Del quilombo al clic"**
-Primero mostramos el pedido tradicional tal cual lo vive un almacenero: audios de 3 minutos, listas en papel, fotos borrosas de planillas, el "¿te llegó mi pedido?" de las 22 h. Un **corte seco** (swipe de pantalla + sonido de "clic") nos lleva a la web: catálogo limpio, +/– en el carrito, confirmar. Cierre con el camión saliendo del depósito.
+Primero mostramos el pedido tradicional tal cual lo vive un almacenero: audios de 3 minutos, listas en papel, fotos borrosas de planillas, el "¿te llegó mi pedido?" de las 22 h. Un **corte seco** (swipe de pantalla + sonido de "clic") nos lleva a la web: catálogo por rubro, "+ Agregar", "Mi pedido" y envío por WhatsApp al vendedor, que lo carga y sale en el reparto.
 
-**Idea fuerza:** *"Tu pedido, en 2 minutos. Sin audios, sin vueltas."*
+**Idea fuerza:** *"Anticipá tu pedido. Sin esperar la visita, sin audios, sin errores."*
 
 **Recursos de marca:**
 - Paleta: color primario de la web para el "después"; el "antes" en tonos desaturados con grano.
-- Contador visible en pantalla (cronómetro 00:00 → 01:47) durante la carga del pedido: es la prueba de la promesa.
+- Contador visible en pantalla con el tiempo real de la grabación (pedido armado en ~40 s): es la prueba de la promesa.
 - Siempre manos reales sobre el celu: el cliente se reconoce.
 
 ### 3 opciones de Hook (0–3 s)
@@ -30,21 +30,24 @@ Primero mostramos el pedido tradicional tal cual lo vive un almacenero: audios d
 
 ---
 
-## 2. Guion técnico (30 s · versión con Hook A)
+## 2. Guion técnico (30 s · versión final montada con la grabación real)
+
+> La web **no maneja precios**: reemplaza al catálogo en papel. El cliente arma su pedido **antes de la visita del vendedor** y se lo envía por **WhatsApp**; el vendedor lo carga en el sistema y se genera la venta.
+> Video: `video/video-promo-pedidos-v2.mp4` · Fuente editable: `video/promo-v2.html`.
 
 | Tiempo | Visual / Escena | Texto en pantalla / Motion Graphics | Voz en off (rioplatense comercial) |
 |---|---|---|---|
-| **0:00–0:03** | Cenital de mostrador de almacén. Celular vibra: audio de WhatsApp de **4:37**. Mano lo deja caer sobre una pila de remitos. | `¿Seguís pidiendo mercadería así? 😩` (tipografía bold, entra con shake) | "¿Otra vez un audio de cinco minutos para hacer el pedido?" |
-| **0:03–0:05** | Montaje rápido (6 cortes de 0,3 s): lista en papel, foto borrosa de planilla, "¿me confirmás?", mensaje tildado gris, caja equivocada llegando. Grano + desaturado. | Stickers rojos tipo error: `❌ x12 o x24?` `❌ ¿llegó?` `❌ sin precio` | "Listas, fotos, 'después te confirmo'..." |
-| **0:05–0:06** | **Corte seco**: el dedo hace swipe en pantalla; transición de "barrido" a color pleno. Sonido de clic + drop de la música. | Logo de la distribuidora + `pedidos.html` en pill | "Pará. Hay una forma mucho más fácil." |
-| **0:06–0:10** | Mockup de celular (asset IA "a") en mano. Screen recording real: se abre `ladistribuciones.web.app/pedidos.html`, scroll por **categorías** (Bebidas · Almacén · Lácteos · Limpieza). | Callout animado: `📱 Catálogo completo` · `💲 Precios actualizados` | "Entrás a la web de pedidos y tenés todo el catálogo ordenado, con precios al día." |
-| **0:10–0:12** | Arranca el **cronómetro** en esquina superior derecha (00:00). Buscador: se tipea "coca" y filtra al instante. | Cronómetro ⏱ `00:00` | "Buscás lo que necesitás..." |
-| **0:12–0:17** | Close-up del dedo tocando **"+"** en 3–4 productos. Cada toque: el ícono del **carrito** rebota y suma el contador (1 → 4). Micro-zoom al subtotal que se actualiza. | Pop-ups: `+6 Gaseosa 2,25 L` `+12 Fideos 500 g` `+24 Agua 500 ml` · Subtotal animado contando | "...tocás más, tocás menos, y ves el total en el momento. Sin sorpresas." |
-| **0:17–0:20** | Abre el **carrito**: resumen con cantidades, precios unitarios y total. Dedo ajusta una cantidad con "–". | Highlight sobre total · `✔ Vos controlás cantidades y precios` | "Revisás todo antes de mandarlo..." |
-| **0:20–0:22** | Toque en **"Confirmar pedido"**. Check verde animado + vibración. Cronómetro se congela en **01:47**. | `✅ Pedido enviado` · `⏱ 01:47` (grande, centrado) | "...y confirmás. Menos de dos minutos." |
-| **0:22–0:26** | Transición match-cut: el check verde se convierte en la luz del depósito. Escena de depósito (asset IA "b"): pedido impreso, operario arma el pallet, el camión sale del portón. | `📦 Directo a depósito` → `🚚 Sale en el reparto` | "Tu pedido entra directo al depósito y sale en el próximo reparto." |
-| **0:26–0:28** | Vuelta al almacén: el comerciante recibe las cajas, sonríe, toma un mate. Celular en el mostrador mostrando la web. | `Sin audios. Sin planillas. Sin vueltas.` (aparece palabra por palabra) | "Sin audios. Sin planillas. Sin vueltas." |
-| **0:28–0:30** | **End card**: fondo color de marca, mockup del celu con la web, URL grande y botón. Logo. | `Hacé tu pedido ahora 👉 ladistribuciones.web.app/pedidos` · Botón `PEDIR AHORA` pulsando | "Entrá hoy a ladistribuciones punto web punto app y hacé tu pedido en dos minutos." |
+| **0:00–0:03** | Mostrador con remitos. Celular con chat "Vendedor" lleno de audios (1:12, 3:05, 4:37) y "¿cuándo pasás? 🙏". Cae sobre la pila. Desaturado + grano. | `¿Esperás al vendedor para hacer el pedido? 🤔` (shake) | "¿Todavía esperás que pase el vendedor para armar el pedido?" |
+| **0:03–0:05** | Stickers rojos que aparecen de a uno. | `⏳ Esperando la visita` `📝 Lista en papel` `❌ ¿x2 o x12?` `🎙️ Audio de 4 min` `❌ Me olvidé el café` `📦 Faltó mercadería` | "Catálogo en papel, audios, 'anotame esto'..." |
+| **0:05–0:06** | Corte seco: barrido azul marino de la marca, logo **LA DISTRIBUCIONES**. | Pill `ladistribuciones.web.app` | "Ahora lo armás vos, cuando quieras." |
+| **0:06–0:08,5** | **Grabación real** en el celular: recorre rubros (Agua, Baggio, Bizcochitos, Rusito). Cronómetro arranca. | `📱 Todo el catálogo` · ⏱ | "Entrás a la web y tenés todo el catálogo ordenado por rubro." |
+| **0:08,5–0:13** | Grabación real: "+ Agregar" en Rusitos y Cafés; aparecen los avisos verdes "agregado" y el botón **Mi pedido** suma. | `➕ Un toque y listo` | "Elegís los productos con un toque..." |
+| **0:13–0:15** | Grabación real: toque en **Mi pedido** → resumen (4 unidades · 4 productos) → toque en **Generar pedido**. | `🛒 Revisás tu pedido` | "...revisás tu pedido..." |
+| **0:15–0:17,6** | "Datos del pedido" con **datos ficticios** (Juan Pérez · Almacén Don Juan · 11 1234-5678 · Av. Siempreviva 742). Toque en **WhatsApp**. | `✍️ Tus datos` | "...completás tus datos..." |
+| **0:17,6–0:20,6** | Chat de WhatsApp con "Vendedor · LA Distribuciones": llega el pedido con códigos y cantidades, ✓✓ azul, responde "¡Recibido! Lo cargo y sale en el próximo reparto 👍". | ⏱ `00:40` grande · `Pedido armado en 40 segundos` | "...y se lo mandás por WhatsApp a tu vendedor." |
+| **0:20,6–0:24,6** | Depósito: tarjeta "🧾 Pedido cargado · ✔ Venta generada", pallet, camión que sale. | `🧑‍💼 Tu vendedor lo carga` → `🚚 Sale en el reparto` | "Él lo carga y tu mercadería sale en el reparto." |
+| **0:24,6–0:27** | Comercio + mate. | `Sin esperar la visita.` `Sin audios.` `Sin errores.` | Ídem texto. |
+| **0:27–0:30** | Placa final azul marino con logo, URL y botón verde pulsando. | `Anticipá tu pedido desde el celular 📱` · `👉 ladistribuciones.web.app/pedidos.html` · `ARMAR MI PEDIDO` | "Anticipá tu pedido desde el celular. Entrá a ladistribuciones punto web punto app." |
 
 ### Notas de producción
 - **Screen recordings:** grabar en un celular real (iPhone/Android 1080×2400) con datos de catálogo verdaderos. Ocultar barra de estado o fijar 9:41, batería llena, Wi-Fi.
@@ -94,39 +97,39 @@ Low angle shot of a white medium-size delivery truck driving out of a warehouse 
 ## 4. CTA y copy para redes
 
 ### Cierre exacto del video
-**VO:** "Entrá hoy a ladistribuciones punto web punto app y hacé tu pedido en dos minutos."
-**Pantalla:** `Hacé tu pedido ahora 👉 ladistribuciones.web.app/pedidos.html` + botón `PEDIR AHORA` + logo.
+**VO:** "Anticipá tu pedido desde el celular. Entrá a ladistribuciones punto web punto app."
+**Pantalla:** logo + `Anticipá tu pedido desde el celular 📱` + `👉 ladistribuciones.web.app/pedidos.html` + botón `ARMAR MI PEDIDO`.
 
 ### Caption para Instagram / TikTok
 ```
-¿Todavía hacés el pedido con audios de 5 minutos? 😅🎙️
+¿Todavía esperás que pase el vendedor para hacer el pedido? 🤔
 
-Ahora pedís desde el celu en menos de 2 minutos ⏱️
+Ahora lo armás vos, cuando quieras, desde el celu 📱
 
-📱 Catálogo completo y ordenado
-💲 Precios actualizados al momento
-🛒 Sumás, restás y ves el total antes de confirmar
-📦 Tu pedido entra directo al depósito
-🚚 Y sale en el próximo reparto
+📖 Todo el catálogo ordenado por rubro
+➕ Agregás productos con un toque
+🛒 Revisás tu pedido
+📲 Se lo mandás por WhatsApp a tu vendedor
+🚚 Él lo carga y sale en el reparto
 
-Sin audios. Sin planillas. Sin vueltas. ✅
+Sin esperar la visita. Sin audios. Sin errores. ✅
 
-👉 Pedí ahora: ladistribuciones.web.app/pedidos.html
+👉 Armá tu pedido: ladistribuciones.web.app/pedidos.html
 (link en bio)
 
-#DistribuidoraMayorista #Mayorista #Almacen #Kiosco #Autoservicio #Gastronomia #PedidosOnline #Comercio #Distribuidora #VentaMayorista #Bebidas #Alimentos #EmprendedoresArgentinos #NegociosLocales
+#DistribuidoraMayorista #Mayorista #Almacen #Kiosco #Autoservicio #Gastronomia #PedidosOnline #Comercio #Distribuidora #VentaMayorista #Alimentos #NegociosLocales
 ```
 
 ### Mensaje para listas de difusión / Estados de WhatsApp
 ```
 ¡Hola! 👋 Te cuento una novedad para tu negocio:
 
-Ya podés hacer tus pedidos desde nuestra web 📱
-✅ Ves todo el catálogo con precios actualizados
-✅ Armás el pedido en menos de 2 minutos
-✅ Lo confirmás y sale directo en el reparto 🚚
+Ya podés anticipar tu pedido desde nuestra web 📱
+✅ Ves todo el catálogo ordenado por rubro
+✅ Armás el pedido en un ratito, cuando te quede cómodo
+✅ Me lo mandás por WhatsApp y yo lo cargo para el próximo reparto 🚚
 
-Sin audios ni planillas, todo más rápido y sin errores.
+Así no dependés de la visita y no se nos escapa nada.
 
 👉 ladistribuciones.web.app/pedidos.html
 
@@ -135,5 +138,5 @@ Guardá el link en favoritos ⭐ y cualquier duda respondé este mensaje. ¡Grac
 
 ### Texto corto para Estado (sobre el video)
 ```
-Pedí en 2 minutos 📱⏱️ 👉 ladistribuciones.web.app/pedidos.html
+Anticipá tu pedido desde el celu 📱 👉 ladistribuciones.web.app/pedidos.html
 ```
